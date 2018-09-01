@@ -50,13 +50,27 @@ Ball.prototype.update = function() {
   this.y += this.velY;
 }
 
+Ball.prototype.collisionDetect = function() {
+  for (var j = 0; j < balls.length; j++) {
+    if (!(this === balls[j])) {
+      var dx = this.x - balls[j].x;
+      var dy = this.y - balls[j].y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < this.size + balls[j].size) {
+        balls[j].color = this.color = 'rgb(' + random(0, 255) + ',' + random(0, 255) + ',' + random(0, 255) +')';
+      }
+    }
+  }
+}
+
 var balls = [];
 
 function loop() {
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+  ctx.fillStyle = 'rgba(0, 0, 0, 1)';
   ctx.fillRect(0, 0, width, height);
 
-  while (balls.length < 25) {
+  while (balls.length < 10) {
     var size = random(10,20);
     var ball = new Ball(
       // ball position always drawn at least one ball width
@@ -74,7 +88,10 @@ function loop() {
   for (var i = 0; i < balls.length; i++) {
     balls[i].draw();
     balls[i].update();
+    balls[i].collisionDetect();
   }
 
   requestAnimationFrame(loop);
 }
+
+loop();
